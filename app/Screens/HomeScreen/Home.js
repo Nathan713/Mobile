@@ -6,9 +6,10 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import ProductItem from '../../Components/ProductItem';
 import products from '../../assets/data/products';
 
-function Home() {
+function Home({searchValue}) {
   //const {navigation} = props;
-
+  
+ 
   return (
    
     <View style = {styles.page}>

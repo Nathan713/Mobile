@@ -2,7 +2,7 @@ export default [
     {
       id: '1',
       title: "Clean Architecture: A Craftsman's Guide to Software Structure and Design",
-      image: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/images/products/cleanarchitecture.jpg',
+      image: 'file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FDoneWithIt-67e6455d-68c5-400e-86bf-957b8b3bb212/ImagePicker/a239a234-aee2-4a9c-8e37-c943bd483a2a.jpg',
       avgRating: 4.2,
       ratings: 1325,
       price: 20.98,
