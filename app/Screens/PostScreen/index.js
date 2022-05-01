@@ -1,118 +1,222 @@
-import React from 'react';
-import { useState } from 'react';
-import { ScrollView, StatusBar ,StyleSheet,SafeAreaView,Text,View,TextInput} from 'react-native';
+import * as React from 'react';
+import { ScrollView,StatusBar,Text, View, StyleSheet, TextInput, Button, Alert } from 'react-native';
+import { useForm, Controller } from 'react-hook-form';
 import TakePhoto from '../../Components/TakePhoto';
-import Button from '../../Components/Button';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import CustomButton from '../../Components/Button';
+import Header from '../../Components/Header';
 
-function PostScreen(props) {
+const PostScreen = () => {
+    const req = "Required field"
+    const productSchema = yup.object().shape({
+        productName: yup.string().required(req),
+        productCategory: yup.string().required(req),
+        productCondition: yup.string()
+            .oneOf(["New", "Like New", "Good", "Fair", "Poor"])
+            .required(req),
+        productDescription: yup.string().required(req),
+        city: yup.string().required(req),
+        state: yup.string().required(req),
+        productPrice: yup.number().positive().integer().required(req),
+       // images: yup.mixed().nullable().test("type", "Must be a jpeg, jpg, or png", (value) => checkIfFilesAreCorrectType(value))
+           // .required(req)
+        // contactInfo: yup.string().required(), 
+        // email: yup.string().required()
+    });
 
-    const[Name,setName] = useState(null);
-    const[Description,setDescription] = useState(null);
-    const[Category,setCategory] = useState(null);
-    const[Price,setPrice] = useState(null);
 
-    const onPressCancel = () => {
-        console.log(Name);
-    }
-    const onPressPost = () => {
-        {handlePostClick};
-        console.warn("Post button pressed");
-        console.log(Name);
-        console.log(Price);
-        
-    }
-
-    
+  const { register, setValue, handleSubmit, control, reset, formState: { errors } } = useForm({
+    resolver: yupResolver(productSchema),
+    mode: "onChange",
+    reValidateMode: "all",
+    defaultValues: {
       
-  const handlePostClick = async () => 
-  {
-    var obj = {productName : Name,
-    "productCategory" : "pets",
-     "productDescription" : "collar for dogs",
-    "productPrice" : 10.00,
-     "contactInfo" : "23456776",
-    "email" : "kissoon291@gmail.com"};
-    var js = JSON.stringify(obj);
-    console.log(Name);
-        console.log(Price);
-    try
-    {
-      const response = await fetch('hhttp://localhost:5000/api/addproduct',
-        {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
-      var res = JSON.parse(await response.text());
-      {() => setName("Byebye")};
     }
-    catch(e)
-    {
-        {() => setPrice("Hello")};
-    }
-   }
-    return (
-        <View style={styles.container}>
+  });
+  const onSubmit = data => {
+    console.log(data);
+  };
 
+  console.log(errors);
+
+  return (
+    <View style ={{paddingTop: StatusBar.currentHeight,}}>
+      <Header text={"Post Item"}/>
+    
+    <ScrollView style = {{paddingBottom:550}}>
+    <View style={styles.container}>
+      
         <TakePhoto/>
-        <View style={styles.input}>
-            <TextInput style={styles.inputStyle}
-                placeholder="Name" 
-                value={Name}
-                onChangeText={text => setName(text)}
+      <Text style={styles.label}>Product Name</Text>
+      <Controller
+        control={control}
+        render={({field: { onChange, onBlur, value }}) => (
+          <TextInput
+            style={styles.input}
+            onBlur={onBlur}
+            onChangeText={value => onChange(value)}
+            value={value}
+          />
+          
+        )}
         
-                />
-            <TextInput style={styles.inputStyle}
-                placeholder="Description" 
-                value={Description}
-                onChangeText={text => setDescription(text)}
-                />
-            <TextInput style={styles.inputStyle}
-                placeholder="Category" 
-                value={Category}
-                onChangeText={text => setCategory(text)}
-                />
-            <TextInput style={styles.inputStyle}
-                placeholder="Price" 
-                value={Price}
-                onChangeText={text => setPrice(text)}
-                />
-        <View style={styles.buttonContainer}>
-            <Button text ={"POST"} onPress={handlePostClick}/>
-            <View style={styles.space} />
-            <Button text ={"Cancel"}  onPress={onPressCancel} />
-        </View>
-        </View>
-        </View>
-    );
-}
+        name="productName"
+        rules={{ required: true }}
+      />
+      {errors && (
+        <Text style={{color: 'red', alignSelf: 'stretch'}} >{errors.productName?.message}</Text>)}
+      
+      <Text style={styles.label}>Product Description</Text>
+      <Controller
+        control={control}
+        render={({field: { onChange, onBlur, value }}) => (
+          <TextInput
+            style={styles.input}
+            onBlur={onBlur}
+            onChangeText={value => onChange(value)}
+            value={value}
+          />
+        )}
+        name="productDescription"
+        rules={{ required: true }}
+      />
+       {errors && (
+        <Text style={{color: 'red', alignSelf: 'stretch'}} >{errors.productDescription?.message}</Text>)}
+        <Text style={styles.label}>Product Category</Text>
+      <Controller
+        control={control}
+        render={({field: { onChange, onBlur, value }}) => (
+          <TextInput
+            multiline={true}
+            numberOfLines={3}
+            style={styles.input}
+            onBlur={onBlur}
+            onChangeText={value => onChange(value)}
+            value={value}
+          />
+        )}
+        name="productCategory"
+        rules={{ required: true }}
+      />
+       {errors && (
+        <Text style={{color: 'red', alignSelf: 'stretch'}} >{errors.productCategory?.message}</Text>)}
+      <Text style={styles.label}>Product Condition</Text>
+      <Controller
+        control={control}
+        render={({field: { onChange, onBlur, value }}) => (
+          <TextInput
+            style={styles.input}
+            onBlur={onBlur}
+            onChangeText={value => onChange(value)}
+            value={value}
+          />
+        )}
+        name="productCondition"
+        rules={{ required: true }}
+      />
+       {errors && (
+        <Text style={{color: 'red', alignSelf: 'stretch'}} >{errors.productCondition?.message}</Text>)}
+      <Text style={styles.label}>Listing Price</Text>
+      <Controller
+        control={control}
+        render={({field: { onChange, onBlur, value }}) => (
+          <TextInput
+            style={styles.input}
+            onBlur={onBlur}
+            onChangeText={value => onChange(value)}
+            value={value}
+          />
+        )}
+        name="productPrice"
+        rules={{ required: true }}
+      />
+       {errors && (
+        <Text style={{color: 'red', alignSelf: 'stretch'}} >{errors.productPrice?.message}</Text>)}
+      <Text style={styles.label}>City</Text>
+      <Controller
+        control={control}
+        render={({field: { onChange, onBlur, value }}) => (
+          <TextInput
+            style={styles.input}
+            onBlur={onBlur}
+            onChangeText={value => onChange(value)}
+            value={value}
+          />
+        )}
+        name="city"
+        rules={{ required: true }}
+      />
+       {errors && (
+        <Text style={{color: 'red', alignSelf: 'stretch'}} >{errors.city?.message}</Text>)}
+      <Text style={styles.label}>State</Text>
+      <Controller
+        control={control}
+        render={({field: { onChange, onBlur, value }}) => (
+          <TextInput
+            style={styles.input}
+            onBlur={onBlur}
+            onChangeText={value => onChange(value)}
+            value={value}
+          />
+        )}
+        name="state"
+        rules={{ required: true }}
+      />
+       {errors && (
+        <Text style={{color: 'red', alignSelf: 'stretch'}} >{errors.state?.message}</Text>)}
+      <View >
+        <CustomButton
+          text="Reset"
+          onPress={() => {
+            reset({
+              Name: '',
+              Description: ''
+            })
+          }}
+        />
+      </View>
+
+      <View >
+        <CustomButton
+          text="Post"
+          onPress={handleSubmit(onSubmit)}
+        />
+      </View>
+      </View>
+    </ScrollView>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        flex:1,
-        backgroundColor:"green",
-        paddingTop: StatusBar.currentHeight,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    inputStyle: {
-        marginTop: 20,
-        width: 300,
-        height: 40,
-        paddingHorizontal: 10,
-        borderRadius: 50,
-        backgroundColor: '#DCDCDC',
-      },
-    input: {
-        alignItems: 'center',
-    },
-    buttonContainer: {
-        width: '100%',
-        flexDirection: 'row',
-    },
-    button:{
-        
-    },
-    space: {
-        width: 20, // or whatever size you need
-        height: 20,
-      },
-})
+  label: {
+    color: 'white',
+    margin: 20,
+    marginLeft: 0,
+  },
+  button: {
+    marginTop: 40,
+    color: 'black',
+    height: 40,
+    backgroundColor: '#b6e3ff',
+    borderRadius: 10,
+  },
+  container: {
+    flex: 1,
+    paddingTop: StatusBar.currentHeight,
+    //justifyContent: 'center',
+    padding: 8,
+    backgroundColor: '#0e101c',
+    paddingBottom: 100
+  },
+  input: {
+    backgroundColor: 'white',
+    height: 40,
+    padding: 10,
+    borderRadius: 4,
+  },
+  
+});
 
 export default PostScreen;

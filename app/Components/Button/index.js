@@ -1,28 +1,30 @@
 import React from 'react';
-import {View, Text, Pressable,StyleSheet} from 'react-native';
-
-const Button = ({text, onPress}) => {
+import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
+ 
+export default function CustomButton({ text, onPress }) {
     return (
-        <Pressable onPress={onPress} style={styles.root}>
-            <Text style={styles.text}>{text}</Text>
-        </Pressable>
-    )
+        <TouchableOpacity onPress={onPress}>
+            <View style={styles.button}>
+                <Text style={styles.buttonText}>{text}</Text>
+            </View>
+        </TouchableOpacity>
+    );
 }
-
 const styles = StyleSheet.create({
-    root: {
-        backgroundColor: '#e47911',
-        marginVertical: 10,
-        height: 35,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 5,
-        borderColor: '#a15e1b'
+    button: {
+        borderRadius: 8,
+        paddingVertical: 14,
+        paddingHorizontal: 10,
+        marginTop: 40,
+        color: 'black',
+        backgroundColor: '#FFC904',
+        borderRadius: 10,
     },
-    text: {
-        fontSize: 18
+    buttonText: {
+        color: 'black',
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+        fontSize: 16,
+        textAlign: 'center',
     }
-})
-
-
-export default Button;
+});
