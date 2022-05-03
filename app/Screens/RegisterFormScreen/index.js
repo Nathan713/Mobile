@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import { ScrollView,StatusBar,Text, View, StyleSheet, TextInput, Button, Alert } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import TakePhoto from '../../Components/TakePhoto';
@@ -7,8 +8,11 @@ import * as yup from 'yup';
 import CustomButton from '../../Components/Button';
 import {useNavigation} from '@react-navigation/native';
 import Header from '../../Components/Header';
+import WaitForVerify from '../WaitForVerify';
 
 const RegisterFormScreen = () => {
+  const [registerError, setRegisterError] = useState(null);
+  
     const req = "Required field"
     const registerSchema = yup.object().shape({
       firstName: yup.string().required(req),
@@ -33,9 +37,31 @@ const RegisterFormScreen = () => {
     reValidateMode: "all",
   });
   const navigation = useNavigation();
-  const onRegister = data => {
-    console.log("Succesfull");
-    navigation.navigate('LoggedInScreen');
+
+  const onRegister = async (data) => {
+    try
+    {
+      //console.log("Hello");
+      var send = JSON.stringify(data);
+      //console.log(send);
+      const response = await fetch('http://marketsquare.herokuapp.com/api/register',
+        {method:'POST',body:send,headers:{'Content-Type': 'application/json'}});
+      var res = JSON.parse(await response.text());
+      console.log(res);
+      if (res.error) {
+        setRegisterError("Failed to Register");
+      }
+      else
+      {
+        //storeData(res);
+        console.log("Succesfull");
+        navigation.navigate('WaitForVerify');
+      }
+    }
+    catch(e)
+    {
+      setLoginError("Error bjhh");
+    }
   };
 
   console.log(errors);
@@ -144,7 +170,7 @@ const RegisterFormScreen = () => {
       />
        {errors && (
         <Text style={{color: 'red', alignSelf: 'stretch'}} >{errors.passwordTwo?.message}</Text>)}
-      
+        <Text style={{color: 'red', alignSelf: 'stretch'}} >{registerError}</Text>
       <View >
         <CustomButton
           text="Reset"
@@ -160,8 +186,8 @@ const RegisterFormScreen = () => {
       <View >
         <CustomButton
           text="Register"
-          onPress={onRegister}
-          //onPress={handleSubmit(onRegister)} uncomment later
+          //onPress={onRegister}
+          onPress={handleSubmit(onRegister)}
         />
       </View>
       </View>

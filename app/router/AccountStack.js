@@ -9,6 +9,8 @@ import LoginFormScreen from '../Screens/LoginFormScreen';
 import LoggedInScreen from '../Screens/LoggedInScreen';
 import { SafeAreaView } from 'react-navigation';
 import { View, StyleSheet} from 'react-native';
+import WaitForVerify from '../Screens/WaitForVerify';
+
 const Stack = createNativeStackNavigator();
 
 const AccountStack = () => {
@@ -24,6 +26,7 @@ const AccountStack = () => {
         />
         <Stack.Screen name="RegisterFormScreen" component={RegisterFormScreen} />
         <Stack.Screen name="LoginFormScreen" component={LoginFormScreen} />
+        <Stack.Screen name="WaitForVerify" component={WaitForVerify} />
         <Stack.Screen
           name="LoggedInScreen"
           component={LoggedInScreen}

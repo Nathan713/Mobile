@@ -6,11 +6,38 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import CustomButton from '../../Components/Button';
 import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState,useEffect } from 'react';
+
 
 const LoggedInScreen = () => {
+  const [firstName,setFirstName] = useState('');
+  const [lastName,setLastName] = useState('');
+  const [phoneNumber,setPhoneNumber] = useState('');
+  const [email,setEmail] = useState('');
+  
+  const getUserData = async() => {
+    
+    try{
+        const userData = await AsyncStorage.getItem('@storage_Key');
+        const fn = JSON.parse(userData).fn;
+        const ln = JSON.parse(userData).ln;
+        setFirstName(fn);
+        setLastName(ln);
+
+        
+    }catch (e) {
+
+    }
+  }
+  useEffect(() => {
+    getUserData();
+
+    }, [])
+
     return(
         <View>
-            <Text> You are Logged In</Text>
+            <Text> You are Logged In As {firstName} {lastName}</Text>
         </View>
     )
 }
