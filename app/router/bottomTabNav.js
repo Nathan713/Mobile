@@ -9,10 +9,41 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import HomeStack from './HomeStack';
 import AccountStack from './AccountStack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState,useEffect } from 'react';
 
 const Tab = createBottomTabNavigator();
 
 function BottomTabNav() {
+    const [firstName,setFirstName] = useState('');
+  const [lastName,setLastName] = useState('');
+  const [phoneNumber,setPhoneNumber] = useState('');
+  const [email,setEmail] = useState('');
+  const [JWTToken,setJWTToken] = useState('');
+
+    const getUserData = async() => {
+    
+        try{
+            const userData = await AsyncStorage.getItem('@storage_Key');
+            const fn = JSON.parse(userData).fn;
+            const ln = JSON.parse(userData).ln;
+            const pn = JSON.parse(userData).pn;
+            const token = JSON.parse(userData).accessToken;
+            const email = JSON.parse(userData).email;
+            setFirstName(fn);
+            setLastName(ln);
+            setEmail(email)
+            setJWTToken(token);;
+            setPhoneNumber(pn);
+            console.log(email);
+        }catch (e) {
+    
+        }
+      }
+      useEffect(() => {
+        getUserData();
+        }, [JWTToken])
+
     return (
            
             <Tab.Navigator screenOptions={{headerShown: false, tabBarInactiveTintColor: '#000000', tabBarActiveTintColor:'#BA9B37'}}>

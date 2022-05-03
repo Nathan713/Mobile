@@ -6,8 +6,17 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import CustomButton from '../../Components/Button';
 import Header from '../../Components/Header';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState,useEffect } from 'react';
 
 const PostScreen = () => {
+  const[image,setImage] = useState('');
+  const [firstName,setFirstName] = useState('');
+  const [lastName,setLastName] = useState('');
+  const [phoneNumber,setPhoneNumber] = useState('');
+  const [email,setEmail] = useState('');
+  const [JWTToken,setJWTToken] = useState('');
+
     const req = "Required field"
     const productSchema = yup.object().shape({
         productName: yup.string().required(req),
@@ -25,6 +34,28 @@ const PostScreen = () => {
         // email: yup.string().required()
     });
 
+    const getUserData = async() => {
+    
+      try{
+          const userData = await AsyncStorage.getItem('@storage_Key');
+          const fn = JSON.parse(userData).fn;
+          const ln = JSON.parse(userData).ln;
+          const pn = JSON.parse(userData).pn;
+          const token = JSON.parse(userData).accessToken;
+          const email = JSON.parse(userData).email;
+          setFirstName(fn);
+          setLastName(ln);
+          setEmail(email)
+          setJWTToken(token);;
+          setPhoneNumber(pn);
+          
+      }catch (e) {
+  
+      }
+    }
+    useEffect(() => {
+      getUserData();
+      }, [])
 
   const { register, setValue, handleSubmit, control, reset, formState: { errors } } = useForm({
     resolver: yupResolver(productSchema),
@@ -34,12 +65,43 @@ const PostScreen = () => {
       
     }
   });
-  const onSubmit = data => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try
+    {
+      const oldData =  { email: email, contactInfo: phoneNumber }
+     // console.log("Hello");
+      var send = {
+        ...data,
+        ...oldData,
+        ProductImages: image,
+        jwtToken: JWTToken}
+
+      var stringy = JSON.stringify(send);
+      console.log(send);
+      const response = await fetch('http://marketsquare.herokuapp.com/api/addproduct',
+        {method:'POST',body:stringy,headers:{'Content-Type': 'application/json'}});
+      var res = JSON.parse(await response.text());
+      //console.log(res);
+      if (res.length <= 0) {
+        console.log("failed");
+      }
+      else
+      {
+        console.log("Succesfull");
+        //navigation.navigate('');
+      }
+    }
+    catch(e)
+    {
+      
+    }
   };
 
   console.log(errors);
-
+  setStateOfParent = (newImage) => {
+    setImage(newImage);
+    console.log(image);
+  }
   return (
     <View style ={{paddingTop: StatusBar.currentHeight,}}>
       <Header text={"Post Item"}/>
@@ -47,7 +109,7 @@ const PostScreen = () => {
     <ScrollView style = {{paddingBottom:550}}>
     <View style={styles.container}>
       
-        <TakePhoto/>
+        <TakePhoto setStateOfParent = {setStateOfParent}/>
       <Text style={styles.label}>Product Name</Text>
       <Controller
         control={control}

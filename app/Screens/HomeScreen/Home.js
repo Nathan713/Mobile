@@ -11,20 +11,19 @@ import { useState,useEffect } from 'react';
 function Home({searchValue}) {
   //const {navigation} = props;
   const [JSON_DATA, setJSON_DATA] = useState('');
+  
 
   const onHome = async (data) => {
     try
     {
-      //console.log("Hello");
-      var search = '';
-      var obj = {"search":search};
+      var obj = {"search":searchValue};
       var send = JSON.stringify(obj);
       //console.log(send);
       const response = await fetch('http://marketsquare.herokuapp.com/api/search',
         {method:'POST',body:send,headers:{'Content-Type': 'application/json'}});
       var res = JSON.parse(await response.text());
       setJSON_DATA(res.res);
-     console.log(JSON_DATA);
+     //console.log(JSON_DATA);
       if (res.length <= 0) {
       }
       else
@@ -37,10 +36,10 @@ function Home({searchValue}) {
       console.log("failed");
     }
   };
-
-  useEffect(() => {
-    onHome();
-    }, [])
+  
+    useEffect(async() => {
+      onHome();
+   },[searchValue])
 
   return (
     <View style = {styles.page}>
@@ -51,7 +50,15 @@ function Home({searchValue}) {
         productName = {item.ProductName}
         price = {item.ProductPrice}
         image = {item.ProductImages[0]}
-        
+        condition = {item.ProductCondition}
+        city = {item.ProductCity}
+        state = {item.ProductState}
+        id = {item._id}
+        description = {item.ProductDescription}
+        category = {item.ProductCategory}
+        images = {item.ProductImages}
+        email = {item.Email}
+        contactInfo = {item.ContactInfo}
          />
         }
          showsVerticalScrollIndicator={false}

@@ -30,6 +30,7 @@ const LoggedInScreen = () => {
 
     }
   }
+  
   useEffect(() => {
     getUserData();
 

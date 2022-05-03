@@ -16,12 +16,14 @@ export default function TakePhoto() {
       }
   
       const result = await ImagePicker.launchImageLibraryAsync();
+      
   
       // Explore the result
       console.log(result);
   
       if (!result.cancelled) {
         setPickedImagePath(result.uri);
+        setStateOfParent(result.uri);
         console.log(result.uri);
       }
     }
