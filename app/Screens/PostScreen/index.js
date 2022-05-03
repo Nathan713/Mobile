@@ -9,7 +9,7 @@ import Header from '../../Components/Header';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect } from 'react';
 import storage from '../firebase.js';
-
+import { v4 as uuid } from 'uuid';
 
 
 const PostScreen = () => {
